@@ -1,0 +1,18 @@
+{
+  "dependencies": {
+    "@prisma/client": "^6.4.0",
+    "bcryptjs": "^3.0.2",
+    "bullmq": "^5.41.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "ioredis": "^5.5.0",
+    "jsonwebtoken": "^9.0.2",
+    "mqtt": "^5.10.3",
+    "prisma": "^6.4.0",
+    "redis": "^4.7.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
