@@ -1,5 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
+import bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 const SECRET_JWT = process.env.SECRET_JWT
@@ -12,8 +13,10 @@ export const login = async (req, res) => {
         const user = await prisma.user.findUnique({
             where : { email :  email }
         });
-
         if (!user) return res.status(404).send("Akun tidak ditemukan segera lakukan registrasi di Staff TU");
+
+        const hashedPassword = await bcrypt.compare(password, user.password); 
+        if (!hashedPassword) return res.status(404).send("Password Salah");
 
         const token = jwt.sign({email : user.email, role : user.role, name : user.name}, SECRET_JWT);
         res.cookie("token", token, { httpOnly: true, maxAge: 60 * 60 * 1000 });
