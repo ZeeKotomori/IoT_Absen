@@ -6,6 +6,9 @@
     "dev": "nodemon src/index.js",
     "start": "node src/index.js"
   },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
   "type": "module",
   "dependencies": {
     "@prisma/client": "^6.4.0",
