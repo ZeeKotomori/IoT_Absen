@@ -1,0 +1,34 @@
+import { PrismaClient } from "@prisma/client";
+import jwt from "jsonwebtoken";
+const prisma = new PrismaClient();
+
+const SECRET_JWT = process.env.SECRET_JWT
+
+export const login = async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !password) return res.status(400).send("Email dan Password harus di isi"); 
+    
+    try {
+        const user = await prisma.user.findUnique({
+            where : { email :  email }
+        });
+
+        if (!user) return res.status(404).send("Akun tidak ditemukan segera lakukan registrasi di Staff TU");
+
+        const token = jwt.sign({email : user.email, role : user.role, name : user.name}, SECRET_JWT);
+        res.cookie("token", token, { httpOnly: true, maxAge: 60 * 60 * 1000 });
+    
+        return res.status(200).send({
+            message : "Login Berhasil",
+            token : token
+        });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ message : "Internal Server Error"});
+    }
+}
+
+export const logout = async (req, res) => {
+    res.clearCookie("token");
+    res.status(200).send({ message : "logout berhasil" });
+}
