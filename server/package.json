@@ -4,7 +4,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/index.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "migrate": "prisma migrate dev",
+    "studio": "prisma studio",
+    "seed": "prisma db seed",
+    "migrate-and-studio": "npm run migrate && npm run studio"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
@@ -20,9 +24,11 @@
     "express": "^4.21.2",
     "ioredis": "^5.5.0",
     "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
     "mqtt": "^5.10.3",
     "prisma": "^6.4.0",
-    "redis": "^4.7.0"
+    "redis": "^4.7.0",
+    "winston": "^3.17.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
