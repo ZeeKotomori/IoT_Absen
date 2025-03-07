@@ -71,19 +71,38 @@ export const createSubjectTeacher = async (req, res) => {
 
 export const updateSubjectTeacher = async (req, res) => {
     const { id } = req.params;
-    const { name, email, password, kelasId } = req.body
-    if (!name || !email || !password || !kelasId) return res.status(400).send({ message : "Isi semua data dengan lengkap" });
+    const { name, password, confirmPassword, subject } = req.body
+    if (!name || !password || !confirmPassword || !subject) return res.status(400).send({ message : "Isi semua data dengan lengkap" });
 
     try {
+        if (password !== confirmPassword) return res.status(400).send({ message : "Password tidak cocok" })
+        
         const user = await prisma.user.update({
             where : {
                 id : id
             },
             data : {
                 name : name,
-                email, email,
                 password : password,
-                classes : kelasId
+            }
+        });
+        
+        if (!user) return res.status(404).send({ message : "Akun Tidak Ada" });
+
+        const subjectTeacher = await prisma.subjectTeacher.findFirst({
+            where: {
+                teacherId: user.id
+            }
+        });
+
+        if (!subjectTeacher) return res.status(404).send({ message: "Data SubjectTeacher tidak ditemukan" });
+        
+        await prisma.subjectTeacher.update({
+            where: {
+                id : subjectTeacher.id
+            },
+            data : {
+                subjects : subject
             }
         });
         
@@ -112,10 +131,32 @@ export const deleteSubjectTeacher = async (req, res) => {
             }
         });
 
-
         return res.status(200).send({ message : "Akun Sudah Dihapus" });
     } catch (error) {
         console.log(error);
         return res.status(500).send({message : "Internal Server Error" });
+    }
+}
+
+export const getSubjectTeacherByName = async (req, res) => {
+    const { name } = req.query;
+    if (!name) return res.status(400).send({ message : "Isi semua data dengan lengkap" })
+
+    try {
+        const user = await prisma.user.findFirst({
+            where : {
+                name : { 
+                    contains : name,
+                    mode : "insensitive"
+                }
+            }
+        });
+
+        if (!user) return res.status(404).send({ message : "Akun tidak di temukan" });
+
+        return res.status(200).send({ message : "Akun ditemukan", user });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).send({ message : "Internal Server Error" });
     }
 }
