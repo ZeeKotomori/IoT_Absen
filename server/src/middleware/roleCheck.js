@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export const checkUserRole = (allowedRoles) => {
+export const checkUserRole = (...allowedRoles) => {
     return async (req, res, next) => {
         const email = req.user.email;
 
