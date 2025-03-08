@@ -1,8 +1,7 @@
-import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { logger, getNextErrorIndex } from "../utils/logger.js"
-const prisma = new PrismaClient();
+import prisma from "../../config/prisma.js";
 
 const SECRET_JWT = process.env.SECRET_JWT;
 
