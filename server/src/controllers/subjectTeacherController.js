@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { getNextErrorIndex, logger } from "../utils/logger.js"; // Pastikan path benar
-
-const prisma = new PrismaClient();
+import prisma from "../../config/prisma.js";
 
 export const getSubjectTeachers = async (req, res) => {
     try {
