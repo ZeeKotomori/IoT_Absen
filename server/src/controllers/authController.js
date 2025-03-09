@@ -1,8 +1,7 @@
-import { PrismaClient } from "@prisma/client";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 import { logger, getNextErrorIndex } from "../utils/logger.js"
-const prisma = new PrismaClient();
+import prisma from "../../config/prisma.js";
 
 const SECRET_JWT = process.env.SECRET_JWT;
 
@@ -35,10 +34,7 @@ export const login = async (req, res) => {
         });
     } catch (error) {
         let errorId = getNextErrorIndex();
-        logger.error({
-            message: `Error getSubjectTeacherByName: ${error.message}`,
-            errorId,
-        });
+        logger.error({ level : "error", message: `Error getSubjectTeacherByName: ${error.message}`, id : errorId });
         return res.status(500).send({ message: "Internal Server Error", errorId });
     }
 };
