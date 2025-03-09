@@ -27,26 +27,25 @@ export const getNextErrorIndex = () => {
 }; 
 
 export const logger = winston.createLogger({
-    level: "error",
+    level: "info",
     format: winston.format.combine(
-        winston.format.timestamp(),
-        winston.format.printf(({ timestamp, level, message, errorId }) => {
-            return `${timestamp} [${level.toUpperCase()}] (Error ID: ${errorId || "N/A"}): ${message}`;
+        winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+        winston.format.printf(({ timestamp, level, message, id }) => {
+            return `${timestamp} [${level.toUpperCase()}] (ID: ${id || "N/A"}): ${message}`;
         })
     ),
     transports: [
-        new winston.transports.File({
-            filename: path.join(logDirectory, "error.log"),
-            level: "error"
+        new winston.transports.File({ filename: path.join(logDirectory, "error.log"), level: "error" }),
+        new winston.transports.File({ filename: path.join(logDirectory, "warn.log"), level: "warn" }),
+        new winston.transports.File({ filename: path.join(logDirectory, "info.log"), level: "info" }),
+        new winston.transports.Console({
+            format: winston.format.combine(
+                winston.format.colorize(),
+                winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
+                winston.format.printf(({ timestamp, level, message, id }) => {
+                    return `${timestamp} [${level.toUpperCase()}] (ID: ${id || "N/A"}): ${message}`;
+                })
+            )
         }),
-        new winston.transports.File({
-            filename: path.join(logDirectory, "warn.log"),
-            level: "warn"
-        }),
-        new winston.transports.File({
-            filename: path.join(logDirectory, "info.log"),
-            level: "info"
-        }),
-        new winston.transports.Console(),
-    ]
+    ],
 });
