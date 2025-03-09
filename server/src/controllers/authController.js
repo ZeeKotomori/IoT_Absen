@@ -34,10 +34,7 @@ export const login = async (req, res) => {
         });
     } catch (error) {
         let errorId = getNextErrorIndex();
-        logger.error({
-            message: `Error getSubjectTeacherByName: ${error.message}`,
-            errorId,
-        });
+        logger.error({ level : "error", message: `Error getSubjectTeacherByName: ${error.message}`, id : errorId });
         return res.status(500).send({ message: "Internal Server Error", errorId });
     }
 };
