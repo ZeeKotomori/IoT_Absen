@@ -1,5 +1,5 @@
-import prisma from "../../config/prisma";
-import { logger } from "../utils/logger";
+import prisma from "../../config/prisma.js";
+import { logger } from "../utils/logger.js";
 
 export const getAttendance = async (req, res) => {
     try {
