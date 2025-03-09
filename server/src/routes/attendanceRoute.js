@@ -1,7 +1,7 @@
 import express from "express";
-import { createAttendance, deleteAttendance, getAttendance, getAttendanceById, updateAttendance } from "../controllers/attendanceController";
-import { checkUserRole } from "../middleware/roleCheck";
-import { authenticateToken } from "../middleware/jwtmiddleware";
+import { createAttendance, deleteAttendance, getAttendance, getAttendanceById, updateAttendance } from "../controllers/attendanceController.js";
+import { checkUserRole } from "../middleware/roleCheck.js";
+import { authenticateToken } from "../middleware/jwtmiddleware.js";
 
 const routerAttendance = express.Router();
 
