@@ -4,8 +4,10 @@ import prisma from "../../config/prisma.js";
 
 export const schedulePulling = async () => {
     try {
-        logger.info("🔄 Pulling data kehadiran dari database ke Redis");
-        const today = new Date().toISOString().split("T")[0];
+        const infoId = getNextErrorIndex()
+        logger.info({ level : "info", message : "🔄 Pulling data kehadiran dari database ke Redis", id : infoId });
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
         let page = 0;
         let pageSize = 500;
@@ -17,7 +19,10 @@ export const schedulePulling = async () => {
                     id: true,
                     Attendance: true,
                     Student: {
-                        select: { rfid: true }
+                        select: {
+                            id : true,
+                            rfid: true
+                        }
                     }
                 },
                 skip: page * pageSize,
@@ -25,21 +30,21 @@ export const schedulePulling = async () => {
             });
 
             if (students.length === 0) break;
-
+            
             const redisPipeline = redis.pipeline();
 
             for (const student of students) {
                 const existingAttendance = await prisma.attendance.findFirst({
                     where: {
-                        userId: student.id,
-                        date: today,
+                        studentId: student.Student.id,
+                        date : today
                     },
                 });
 
                 if (!existingAttendance) {
                     await prisma.attendance.create({
                         data: {
-                            studentId: student.id,
+                            studentId: student.Student.id,
                             status: "BELUM_HADIR",
                             date: today
                         }
@@ -53,16 +58,17 @@ export const schedulePulling = async () => {
             page++;
         }
 
-        logger.info("✅ Pulling data selesai!");
+        logger.info({ level : "info", message : "✅ Pulling data selesai!", id : infoId});
     } catch (error) {
-        const errorId = getNextErrorIndex();
-        logger.error({ message: `Error pulling kehadiran: ${error.message}`, errorId });
+        let errorId = getNextErrorIndex();
+        logger.error({ level: "error", message: `Error Pulling Data: ${error.message}`, id : errorId });
     }
 }
 
 export const markAbsent = async () => {
     try {
-        logger.info("🔄 Memeriksa kehadiran di Redis untuk update status...");
+        const infoId = getNextErrorIndex()
+        logger.info({ level : "info", message : "🔄 Memeriksa kehadiran di Redis untuk update status...", id : infoId});
 
         const keys = await redis.keys("kehadiran:*");
         const redisPipeline = redis.pipeline();
@@ -82,16 +88,17 @@ export const markAbsent = async () => {
 
         await updatePipeline.exec();
 
-        logger.info(`✅ Status kehadiran diperbarui.`);
+        logger.info({ level: "info", message : `✅ Status kehadiran diperbarui.`, id : infoId });
     } catch (error) {
-        const errorId = getNextErrorIndex();
-        logger.error({ message: `Error update kehadiran: ${error.message}`, errorId });
+        let errorId = getNextErrorIndex();
+        logger.error({ level: "error", message: `Error Mark Data: ${error.message}`, id : errorId });
     }
 }
 
 export const saveAbsentToDb = async () => {
     try {
-        logger.info("🔄 Menyimpan kehadiran ke database...");
+        const infoId = getNextErrorIndex();
+        logger.info({ level : "info", message : "🔄 Menyimpan kehadiran ke database...", id : infoId });
 
         const keys = await redis.keys("Kehadiran:*");
         if (keys.length === 0) return;
@@ -100,7 +107,8 @@ export const saveAbsentToDb = async () => {
         keys.forEach((key) => redisPipeline.hget(key, "status"));
 
         const results = await redisPipeline.exec();
-        const today = new Date().toISOString().split("T")[0];
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
         const updateData = results.map(([err, data], index) => ({
             rfid: keys[index].split(":")[1],
@@ -129,9 +137,9 @@ export const saveAbsentToDb = async () => {
 
         await redis.del(...keys);
 
-        logger.info(`✅ Kehadiran berhasil disimpan dan Redis dikosongkan.`);
+        logger.info({level : "info", message : `✅ Kehadiran berhasil disimpan dan Redis dikosongkan.`, id : infoId});
     } catch (error) {
-        const errorId = getNextErrorIndex();
-        logger.error({ message: `Error save kehadiran: ${error.message}`, errorId });
+        let errorId = getNextErrorIndex();
+        logger.error({ level: "error", message: `Error Save Data to Database: ${error.message}`, id : errorId });
     }
 }

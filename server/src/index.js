@@ -1,5 +1,6 @@
 import express from "express";
-import client from "./service/mqtt/mqttHandler.js";
+import "./service/mqtt/mqttHandler.js";
+import "./worker.js";
 import cookie from "cookie-parser";
 import authRoute from "./routes/authRoute.js";
 import subjectTeacherRoute from "./routes/subjectTeacherRoute.js";

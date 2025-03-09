@@ -1,9 +1,9 @@
 import { Worker } from "bullmq";
-import { redis } from "../config/redis";
-import pullAttendanceJob from "./jobs/pullAttendanceJob";
-import markAbsentJob from "./jobs/markAbsentJob";
-import saveAttendanceJob from "./jobs/saveAttendanceJob";
-import { logger } from "./utils/logger";
+import { redis } from "../config/redis.js";
+import pullAttendanceJob from "./jobs/pullAttendanceJob.js";
+import markAbsentJob from "./jobs/markAbsentJob.js";
+import saveAttendanceJob from "./jobs/saveAttendanceJob.js";
+import { getNextErrorIndex, logger } from "./utils/logger.js";
 
 const worker = new Worker(
     "attendanceQueue",
@@ -13,5 +13,5 @@ const worker = new Worker(
         if (job.name === "saveAbsentToDb") await saveAttendanceJob();
     }, { connection : redis }
 );
-
-logger.info("👷 Worker berjalan dan siap menerima job!")
+const infoId = getNextErrorIndex();
+logger.info({level : "info", message :"👷 Worker berjalan dan siap menerima job!" , id : infoId});
