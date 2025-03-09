@@ -1,6 +1,6 @@
 <script>
   import { onMount } from 'svelte';
-  import { ChevronDown, ChevronUp, Search, Bell, BarChart2, CheckCircle, Clock, GraduationCap, Menu, X, LogOut } from 'lucide-svelte';
+  import { ChevronDown, ChevronUp, Search, Bell, BarChart2, CheckCircle, Clock, GraduationCap, Menu, X, LogOut, Minus, Crown } from 'lucide-svelte';
   
   let username = "Dzikra N";
   let role = "Superadmin";
@@ -87,6 +87,15 @@
     { id: 4, label: "Formulir", icon: "file-text" },
     { id: 5, label: "Settings", icon: "settings" }
   ];
+
+  const Leaderboards = [
+    { id: 1, icon:"Z", color:"purple", name: "Zikri AF", class: "XII RPL 2", score: -10 },
+    { id: 2, icon:"V", color:"green", name: "Virgi AF", class: "XII RPL 2", score: 37 },
+    { id: 3, icon:"D", color:"amber-900", name: "Dzikra AF", class: "XII RPL 2", score: 29 },
+    { id: 4, icon:"H", color:"brown", name: "Harvi AF", class: "XII RPL 1", score: 46 },
+    { id: 5, icon:"A", color:"yellow", name: "Akhtar AF", class: "XII RPL 1", score: 89 },
+    { id: 6, icon:"A", color:"purple", name: "Akbar AF", class: "X TKJ", score: 73 },
+  ]
   
   // Generate simple chart data
   function generateChartData(trend, points = 10) {
@@ -364,7 +373,7 @@
         </div>
         
         <!-- Stats cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 md:gap-6 mb-6">
           {#each stats as stat, i}
             <div class="bg-secondary rounded-3xl p-4 overflow-hidden">
               <!-- Chart cards -->
@@ -387,12 +396,12 @@
                   <div class="text-3xl text-center md:text-4xl md:mb-1 font-bold">{stat.value}</div>
                   <div class="px-2 py-1 rounded text-sm md:text-sm flex items-center text-white">
                     {#if stat.trend === 'up'}
-                      <ChevronUp size={20} class="mr-1 p-0.5 bg-green rounded-xl" />
+                      <ChevronUp size={20} strokeWidth={3} class="mr-1 p-0.5 bg-green rounded-xl" />
                       <div class="text-sm bg-green px-3 rounded-xl">
                         {stat.change}
                       </div>
                     {:else}
-                      <ChevronDown size={20} class="mr-1 p-0.5 bg-brown rounded-xl" />
+                      <ChevronDown size={20} strokeWidth={3} class="mr-1 p-0.5 bg-brown rounded-xl" />
                       <div class="text-sm bg-brown px-3 rounded-xl">
                         {stat.change}
                       </div>
@@ -412,30 +421,79 @@
               </div>
             </div>
           {/each}
+          <div class="bg-secondary rounded-3xl p-4 overflow-hidden">
+            <!-- Live data -->
+            <div class="bg-box rounded-xl flex justify-between">
+              <div class="flex flex-col m-3 w-full">
+                <div class="flex items-center gap-2">
+                  <div class="p-1 rounded-full bg-brown"></div>
+                  <p class="text-md font-medium">Live Data</p>
+                </div>
+                <h2 class="text-3xl font-bold m-auto">937</h2>
+              </div>
+              <div class="bg-card rounded-xl flex flex-col items-center px-7 py-7">
+                <h2 class="text-3xl font-semibold">6:20</h2>
+                <h2 class="text-3xl font-semibold">PM</h2>
+              </div>
+            </div>
+            <!-- persentase kehadiran -->
+             <div class="flex justify-center items-center gap-2 mt-6">
+               <div class="font-semibold bg-yellow p-1 rounded-full">
+                 <Minus size={25} strokeWidth={3} />
+               </div>
+               <div class="text-2xl font-semibold bg-yellow pb-0.5 px-8 rounded-full">
+                 9%
+               </div>
+             </div>
+          </div>
         </div>
         
         <!-- Monthly stats -->
-        <div class="bg-secondary rounded-3xl p-4">
-          <div class="bg-box rounded-2xl px-4 py-2 flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 space-y-4 sm:space-y-0">
-            <div class="flex items-center">
-              <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-purple flex items-center justify-center mr-4 flex-shrink-0">
-                <BarChart2 size={20} />
+         <div class="grid grid-cols-1 xl:grid-cols-4 gap-4 md:gap-6 mb-5">
+           <div class="bg-secondary rounded-3xl p-4 xl:col-span-3">
+             <div class="bg-box rounded-2xl px-4 py-2 flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 space-y-4 sm:space-y-0">
+               <div class="flex items-center">
+                 <div class="w-10 h-10 md:w-12 md:h-12 rounded-full bg-purple flex items-center justify-center mr-4 flex-shrink-0">
+                   <BarChart2 size={20} />
+                 </div>
+                 <div>
+                   <div class="font-medium">Rata - Rata Bulanan</div>
+                   <div class="text-xs md:text-sm text-gray-400">Lorem ipsum dolor sit amet</div>
+                 </div>
+               </div>
+               
+               <button class="flex items-center bg-card px-3 py-1.5 rounded-md self-start sm:self-auto">
+                 <span>Bulanan</span>
+                 <ChevronDown size={16} class="ml-2" />
+               </button>
+             </div>
+             
+             <!-- Placeholder for chart -->
+             <div class="h-48 md:h-64 rounded-lg flex items-center justify-center"></div>
+           </div>
+           <div class="bg-secondary rounded-3xl p-4">
+            <div class="bg-box flex items-center rounded-full p-2">
+              <div class={`w-10 h-10 md:w-12 md:h-12 rounded-full bg-purple flex items-center justify-center mr-4 flex-shrink-0`}>
+                <Crown size={20} />
               </div>
-              <div>
-                <div class="font-medium">Rata - Rata Bulanan</div>
-                <div class="text-xs md:text-sm text-gray-400">Lorem ipsum dolor sit amet</div>
+              <div class="font-medium truncate">Leaderboards</div>
+            </div>
+            {#each Leaderboards as leaderboard, i}
+            <div class="mt-4 flex items-center">
+              <div class="h-10 w-10 rounded-xl pb-0.5 bg-{leaderboard.color} flex items-center justify-center text-white font-semibold">
+                {leaderboard.icon}
+              </div>
+              <div class="min-w-0 ml-3">
+                <div class="font-medium truncate">{leaderboard.name}</div>
+                <div class="text-xs md:text-sm text-gray-400 truncate">{leaderboard.class}</div>
+              </div>
+              <div class="ml-auto mr-1 font-medium">
+                <span class="text-md">{leaderboard.score}</span>
               </div>
             </div>
-            
-            <button class="flex items-center bg-card px-3 py-1.5 rounded-md self-start sm:self-auto">
-              <span>Bulanan</span>
-              <ChevronDown size={16} class="ml-2" />
-            </button>
-          </div>
-          
-          <!-- Placeholder for chart -->
-          <div class="h-48 md:h-64 rounded-lg flex items-center justify-center"></div>
-        </div>
+            {/each}
+           </div>
+         </div>
       </main>
     </div>
   </div>
