@@ -77,7 +77,7 @@ model Attendance {
   id         String    @id @default(uuid())
   studentId  String
   student    Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
-  date       DateTime  @default(now())
+  date       DateTime  @db.Date
   status     Status    @default(BELUM_HADIR)
   time_in    DateTime?
   createById String?
